@@ -1,10 +1,10 @@
-package com.shanuka.config_server;
+package com.shanuka.ecom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ConfigServerApplicationTests {
+class EurekaServiceRegistryApplicationTests {
 
 	@Test
 	void contextLoads() {
