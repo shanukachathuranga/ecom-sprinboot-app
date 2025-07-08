@@ -1,0 +1,52 @@
+services:
+  postgres:
+    container_name: ecom_postgres_db
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ecomapp
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgres/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ecom-network
+    restart: unless-stopped
+
+  mongodb:
+    container_name: ecom_mongo_db
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ecomapp
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  mongo-express:
+    container_name: ecom_mongo_express
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ecomapp
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongodb
+
+  mail-dev:
+    container_name: ecom_mail_dev
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+networks:
+  ecom-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongo:
