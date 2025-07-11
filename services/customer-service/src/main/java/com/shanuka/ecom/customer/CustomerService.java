@@ -24,7 +24,7 @@ public class CustomerService {
 
     public void updateCustomer(@Valid CustomerRequestDto requestDto) {
         var customer = repository.findById(requestDto.id())
-                .orElseThrow(() -> new com.shanuka.ecom.exception.CustomerNotFoundException(
+                .orElseThrow(() -> new CustomerNotFoundException(
                     format("Cannot update customer:: No customer found for id:: %s", requestDto.id())
                 ));
 
