@@ -4,6 +4,8 @@ import com.shanuka.ecom.OrderReference.OrderReferenceRequestDto;
 import com.shanuka.ecom.OrderReference.OrderReferenceService;
 import com.shanuka.ecom.customer.CustomerClient;
 import com.shanuka.ecom.exception.BusinessException;
+import com.shanuka.ecom.kafka.OrderConfirmation;
+import com.shanuka.ecom.kafka.OrderProducer;
 import com.shanuka.ecom.product.ProductClient;
 import com.shanuka.ecom.product.PurchaseRequest;
 import jakarta.validation.Valid;
@@ -19,13 +21,14 @@ public class OrderService {
     private final ProductClient productClient;
     private final OrderMapper mapper;
     private final OrderReferenceService orderReferenceService;
+    private final OrderProducer orderProducer;
 
     public Integer createOrder(@Valid OrderRequestDto requestDto) {
         // check the customer --> OpenFeign
         var customer = this.customerClient.findCustomerById(requestDto.customerId())
                 .orElseThrow(() -> new BusinessException("order creation failed::customer not found"));
         //purchase the product --> product microservice using RestTemplate just like OpenFeign
-        this.productClient.purchaseProducts(requestDto.products());
+        var purchasedProducts = this.productClient.purchaseProducts(requestDto.products());
         //persist order
         var order = this.orderRepository.save(mapper.toOrder(requestDto));
         //persist order-references
@@ -42,7 +45,16 @@ public class OrderService {
         // todo start payment process
 
         //send the order confirmation via notification microservice(kafka)
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        requestDto.reference(),
+                        requestDto.amount(),
+                        requestDto.paymentMethod(),
+                        customer,
+                        purchasedProducts
+                )
+        );
 
-        return null;
+        return order.getId();
     }
 }
