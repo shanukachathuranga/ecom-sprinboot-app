@@ -12,6 +12,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -42,6 +45,7 @@ public class OrderService {
                     )
             );
         }
+
         // todo start payment process
 
         //send the order confirmation via notification microservice(kafka)
@@ -57,4 +61,18 @@ public class OrderService {
 
         return order.getId();
     }
+
+    public List<OrderResponseDto> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(mapper::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponseDto findOrderById(Integer orderId) {
+        return orderRepository.findById(orderId)
+                .map(mapper::toOrderResponse)
+                .orElseThrow(() -> new BusinessException(String.format("Order not found for the id: %d", orderId)));
+    }
+
 }

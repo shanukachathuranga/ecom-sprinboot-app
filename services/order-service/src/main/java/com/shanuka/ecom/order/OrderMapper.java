@@ -15,4 +15,14 @@ public class OrderMapper {
                 .build();
     }
 
+    public OrderResponseDto toOrderResponse(Order order){
+        return new OrderResponseDto(
+                order.getId(),
+                order.getReference(),
+                order.getTotalAmount(),
+                order.getCustomerId(),
+                order.getPaymentMethod()
+        );
+    }
+
 }

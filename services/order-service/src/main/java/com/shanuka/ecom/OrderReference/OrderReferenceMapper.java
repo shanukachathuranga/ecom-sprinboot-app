@@ -22,4 +22,11 @@ public class OrderReferenceMapper {
                 .build();
 
     }
+
+    public OrderReferenceResponseDto toOrderReferenceResponse(OrderReference orderReference){
+        return new OrderReferenceResponseDto(
+                orderReference.getId(),
+                orderReference.getQuantity()
+        );
+    }
 }
