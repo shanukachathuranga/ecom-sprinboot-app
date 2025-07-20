@@ -6,6 +6,8 @@ import com.shanuka.ecom.customer.CustomerClient;
 import com.shanuka.ecom.exception.BusinessException;
 import com.shanuka.ecom.kafka.OrderConfirmation;
 import com.shanuka.ecom.kafka.OrderProducer;
+import com.shanuka.ecom.payment.PaymentClient;
+import com.shanuka.ecom.payment.PaymentRequest;
 import com.shanuka.ecom.product.ProductClient;
 import com.shanuka.ecom.product.PurchaseRequest;
 import jakarta.validation.Valid;
@@ -25,6 +27,7 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderReferenceService orderReferenceService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public Integer createOrder(@Valid OrderRequestDto requestDto) {
         // check the customer --> OpenFeign
@@ -46,7 +49,16 @@ public class OrderService {
             );
         }
 
-        // todo start payment process
+        //start payment process
+        var paymentRequest = new PaymentRequest(
+                requestDto.amount(),
+                requestDto.paymentMethod(),
+                order.getId(),
+                requestDto.reference(),
+                customer
+
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
 
         //send the order confirmation via notification microservice(kafka)
         orderProducer.sendOrderConfirmation(
