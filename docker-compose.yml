@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - postgres_data:/var/lib/postgres/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -41,17 +41,17 @@ services:
     container_name: ecom_kafka
     ports:
       - "9092:9092"
-      - "22181:2181"
+      - "9093:9093"
     environment:
       # --- KRaft-specific configuration ---
       # A unique ID for this Kafka node.
       KAFKA_NODE_ID: 1
       # A unique ID for the cluster. Generate this once with `kafka-storage random-uuid`.
-      KAFKA_CLUSTER_ID: '4I31X98JQZWw9K5sg6YBdA'
+      CLUSTER_ID: 'PhJplna4RQy0NBW5TtMVnQ'
       # Defines the roles of this node (broker and controller).
       KAFKA_PROCESS_ROLES: 'broker,controller'
       # Lists the controller nodes. For a single node, it's just itself.
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:2181'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
       # The listener used by controllers.
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
 
@@ -59,7 +59,7 @@ services:
       # Defines how clients connect from inside and outside Docker.
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
       # The address other brokers use to connect.
-      KAFKA_LISTENERS: 'PLAINTEXT://:9092,CONTROLLER://:22181'
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,CONTROLLER://:9093'
       # The address external clients (on your machine) use to connect.
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
 

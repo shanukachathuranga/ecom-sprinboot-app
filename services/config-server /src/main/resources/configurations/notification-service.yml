@@ -16,7 +16,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*' # con.shanuka.ecom.*
-        spring.json.type.mapping: orderConfirmation:com.shanuka.ecom.kafka.order.OrderConfirmation,paymentConfirmation:com.shanuka.ecom.kafka.payment.PaymentNotificationRequest
+        spring.json.type.mapping: orderConfirmation:com.shanuka.ecom.kafka.order.OrderConfirmation,paymentConfirmation:com.shanuka.ecom.kafka.payment.PaymentConfirmation
 
   mail:
     host: localhost
