@@ -13,6 +13,7 @@ import lombok.*;
 public class OrderReference {
 
     @Id
+    @GeneratedValue
     private Integer id;
     private double quantity;
     @ManyToOne(fetch = FetchType.LAZY)

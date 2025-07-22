@@ -1,11 +1,6 @@
 spring:
   data:
     mongodb:
-      username: ecomapp
-      password: password
-      host: localhost
-      port: 27017
-      database: customer
-      authentication-database: admin
+      uri: mongodb://ecomapp:password@localhost:27017/customer?authSource=admin
 server:
   port: 8092
